@@ -87,7 +87,7 @@ https://github.com/jennybc/gapminder
 Import
 ------
 
-1. Download the two files from ..
+1. Download the two files in a zip file from https://www.dropbox.com/s/vh03r4ayzzc865c/gapminder-sql-data.zip?dl=0
 1. Start a New Database **Database -> New Database**
 2. Start the import **Database -> Import**
 3. Select the file to import - gap-every-five-years.csv
