@@ -79,7 +79,7 @@ If we want to write a query, we click on the Execute SQL tab.
 Dataset Description
 -------------------
 
-The dataset for this lesson is cleaned Gapminder data from Jenny Bryant
+The dataset for this lesson is cleaned Gapminder data from Jennifer Bryan
 https://github.com/jennybc/gapminder
 
 
