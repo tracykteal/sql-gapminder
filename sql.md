@@ -1,5 +1,4 @@
-Databases using SQL  
-Data Carpentry
+Data Carpentry Databases using SQL
 ===================
 
 Setup
