@@ -188,11 +188,11 @@ Filtering
 ---------
 
 Databases can also filter data – selecting only the data meeting certain
-criteria.  For example, let’s say we only want data for the species _Dipodomys
-merriami_, which has a species code of DM.  We need to add a WHERE clause to our
+criteria.  For example, let’s say we only want data for the country
+_Iceland_.  We need to add a WHERE clause to our
 query:
 
-    SELECT * FROM surveys WHERE country="United States";
+    SELECT * FROM surveys WHERE country="Iceland";
 
 We can do the same thing with numbers.
 Here, we only want the data since 2000:
@@ -200,31 +200,31 @@ Here, we only want the data since 2000:
     SELECT * FROM surveys WHERE year >= 2000;
 
 We can use more sophisticated conditions by combining tests with AND and OR.
-For example, suppose we want the data on _United States_ starting in the year
+For example, suppose we want the data on _Iceland_ starting in the year
 2000:
 
-    SELECT * FROM surveys WHERE (year >= 2000) AND (country = "United States");
+    SELECT * FROM surveys WHERE (year >= 2000) AND (country = "Iceland");
 
 Note that the parentheses aren’t needed, but again, they help with readability.
 They also ensure that the computer combines AND and OR in the way that we
 intend.
 
 If we wanted to get data for three countries,
-United States, Canada and Mexico we could combine the tests using OR:
+_Iceland_, and two other island countries _Madagascar_ and _Dominican Republic_  we could combine the tests using OR:
 
-    SELECT * FROM surveys WHERE (country = "United States") OR (country = "Canada") OR (country = "Mexico");
+    SELECT * FROM surveys WHERE (country = "Iceland") OR (country = "Madagascar") OR (country = "Dominican Republic");
 
 > ### Challenge
 >
 > Write a query that returns the country, year, life expectancy and population in thousands of people
-> for any field with a life expectancy greater than 70.
-> How many records are there?
+> for any field with a life expectancy greater than 70.  
+> How many records are there?  
 > How many records are there if you change lifeExp to 75?
 >
 > Write a query that returns the country, year, life expectancy and population in thousands of people
-> for any field with a life expectancy greater than 70 and before 1990.
-> How many records are there?
-> How many records are there if you just look at the year 1952?
+> for any field with a life expectancy greater than 70 and before 1990.  
+> How many records are there?  
+> How many records are there if you just look at the year 1952?  
 > How many records are there if you just look at the year 2007?
 
 
@@ -240,14 +240,14 @@ Building more complex queries
 
 Now, lets combine the above queries to get data for the 3 countries from
 the year 2000 on.  This time, let’s use IN as one way to make the query easier
-to understand.  It is equivalent to saying `WHERE (species_id = "DM") OR (species_id
-= "DO") OR (species_id = "DS")`, but reads more neatly:
+to understand.  It is equivalent to saying `WHERE (country = "Iceland") OR (country
+= "Madagascar") OR (country = "Dominican Republic")`, but reads more neatly:
 
-    SELECT * FROM surveys WHERE (year >= 2000) AND (country IN ("United States", "Canada", "Mexico"));
+    SELECT * FROM surveys WHERE (year >= 2000) AND (country IN ("Iceland", "Madagascar", "Dominican Republic"));
 
     SELECT *
     FROM surveys
-    WHERE (year >= 2000) AND (country IN ("United States", "Canada", "Mexico"));
+    WHERE (year >= 2000) AND (country IN ("Iceland", "Madagascar", "Dominican Republic"));
 
 We started with something simple, then added more clauses one by one, testing
 their effects as we went along.  For complex queries, this is a good strategy,
@@ -304,6 +304,10 @@ The computer is basically doing this:
 2. Sorting results according to ORDER BY
 3. Displaying requested columns or expressions.
 
+More on SQL order of execution
+- [SQL Query Order of Operations](http://www.bennadel.com/blog/70-sql-query-order-of-operations.htm)
+
+
 
 Order of clauses
 ----------------
@@ -330,7 +334,7 @@ Aggregation
 Aggregation allows us to combine results by grouping records based on value and
 calculating combined values in groups.
 
-Let’s go to the surveys table and find out how many individuals there are.
+Let’s go to the surveys table and find out how many entries there are.
 Using the wildcard simply counts the number of records (rows)
 
     SELECT COUNT(*) FROM surveys
@@ -340,18 +344,26 @@ We can also find out the overall population (maybe the number of people
 
     SELECT COUNT(*), SUM(pop) FROM surveys;
 
-***Do you think you could output this value in kilograms, rounded to 3 decimal
-   places?***
+Let's output this value in millions of people, rounded to 3 decimal places.
 
-    SELECT ROUND(SUM(weight)/1000.0, 3) FROM surveys
+    SELECT ROUND(SUM(pop)/1000000.0, 3) FROM surveys
 
-There are many other aggregate functions included in SQL including
-`MAX`, `MIN`, and `AVG`.
+There are many other aggregate functions included in SQL
 
-***From the surveys table, can we use one query to output the total population,
-   average populaton, and the min and max population? How about the range of population?***
+- AVG() - Returns the average value
+- COUNT() - Returns the number of rows
+- FIRST() - Returns the first value
+- LAST() - Returns the last value
+- MAX() - Returns the largest value
+- MIN() - Returns the smallest value
+- SUM() - Returns the sum
 
-Now, let's see how many countries were surveys in each continent We do this
+Let's use one query to output the total population,
+average population, and the min and max population.
+
+    SELECT pop, AVG(pop), MIN(pop), MAX(pop) FROM surveys;
+
+Now, let's see how many countries were surveyed in each continent. We do this
 using a GROUP BY clause
 
     SELECT continent, COUNT(*)
@@ -360,7 +372,13 @@ using a GROUP BY clause
 
 GROUP BY tells SQL what field or fields we want to use to aggregate the data.
 If we want to group by multiple fields, we give GROUP BY a comma separated list.
-Here we just have 12 countries each, but there are
+
+> ### Challenge
+>
+> Let's go back to the surveys table. Write queries that return:
+>
+> 1. How many countries were counted in each year.
+> 2. Average gdpPercap of each country
 
 We can order the results of our aggregation by a specific column, including the
 aggregated column.  Let’s count the number of countries in each continent,
@@ -423,20 +441,20 @@ clearer we can use aliases to assign new names to things in the query.
 
 We can alias both table names:
 
-  SELECT surv.year, surv.country
-  FROM surveys AS surv
-  JOIN countries AS co ON surv.country = co.country
+    SELECT surv.year, surv.country
+    FROM surveys AS surv
+    JOIN countries AS co ON surv.country = co.country
 
 And column names:
 
-  SELECT surv.year AS yr, surv.country AS con
-  FROM surveys AS surv
-  JOIN countries AS co ON surv.country = co.country
+    SELECT surv.year AS yr, surv.country AS con
+    FROM surveys AS surv
+    JOIN countries AS co ON surv.country = co.country
 
 The `AS` isn't technically required, so you could do
 
-  SELECT surv.year yr
-  FROM surveys surv
+    SELECT surv.year yr
+    FROM surveys surv
 
 but using `AS` is much clearer so it's good style to include it.
 
